@@ -1,0 +1,16 @@
+{
+  "name": "btd-rollup-2024",
+  "private": true,
+  "scripts": {
+    "build": "slidev build",
+    "dev": "slidev --open",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.46.2",
+    "@tngtech/slidev-theme-tng": "^0.4.1"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.35.1"
+  }
+}
