@@ -16,6 +16,10 @@ This is the story of how Rollup 4 came to have native binaries, what problems I 
 (Who am I, What is my motivation, how do I feel about this?)
 * Let’s talk about open source maintenance
 * Who used Vite? And Rollup?
+* Has anyone written their own JavaScript bundler?
+* These days, a lot of people like to do that
+  * Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, farm, Rspack, Bun.build, Turbopack
+
 * Who had ever submitted an issue to Vite or Rollup?
     * Show some obscure issues
     * Why are issues painful
@@ -82,3 +86,5 @@ Closing the circle
 * I said that Rollup's days are numbered
 * when PR was open, Evan You called me personally 
 
+No performance gain:
+https://github.com/rollup/rollup/issues/5182
