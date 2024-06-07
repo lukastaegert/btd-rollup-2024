@@ -121,7 +121,122 @@ layout: section
 sectionNumber: 3
 ---
 
-# Native Binaries
+# Native Binaries in Node
+
+---
+
+# Native Node Modules
+
+<v-clicks>
+
+* `.node` files (actually a renamed `.so`, `.dylib` or `.dll` depending on OS)
+* Only usable via `require`
+* Traditionally created via `node-gyp` from C++, recompiled for every Node version
+* Since Node 8: Node-API (N-API) as stable interface
+  * Binaries work across Node versions
+  * Need to match OS and CPU architecture
+
+</v-clicks>
+
+---
+
+# Abstracting the interface away<br>with NAPI-RS
+
+<div style="display:flex;flex-direction: row;gap: 20px;">
+<img src="/img/napi-rs.png" alt="NAPI-RS Logo" style="width:100px;height:100px;"/>
+<div>
+
+Powerful macros and types to generate the JavaScript interface
+
+```rust {all|5-8}
+use napi::bindgen_prelude::Buffer;
+use napi_derive::napi;
+use parse_ast::parse_ast;
+
+#[napi]
+pub fn parse(code: String, allow_return_outside_function: bool) -> Buffer {
+  parse_ast(code, allow_return_outside_function).into()
+}
+```
+
+<v-click>
+
+Auto-generated types
+
+```typescript
+export function parse(code: string, allowReturnOutsideFunction: boolean): Buffer
+```
+
+</v-click>
+
+</div>
+</div>
+
+<v-click>
+
+Similar to `rust-bindgen`, but more efficient generated code and powerful tooling.
+
+</v-click>
+
+---
+
+# How to publish across platforms
+
+Set up by NAPI-RS CLI tool
+
+<v-clicks>
+
+* separate packages for every target
+  ```
+  @rollup/rollup-win32-x64-msvc
+  @rollup/rollup-darwin-arm64
+  ...
+  ```
+  * contain only `.node` file as entry point
+  * list `os` and `cpu` in their `package.json` file
+* `rollup` package has __all__ platform packages as `optionalDependencies`
+  * Node only installs suitable packages
+
+</v-clicks>
+
+---
+
+# Building binaries for ALL platforms
+
+<v-clicks>
+
+* Not very feasible on a local machine
+* `npx @napi-rs/cli new` scaffolds project with GitHub Actions to build for many platforms
+
+</v-clicks>
+
+<v-after>
+
+```mermaid {theme: 'neutral', scale: 0.8}
+graph LR
+A[on.push] --> B[Build 1] --> C[Test 1] --> D[Publish]
+A --> E[Build 2] --> F[Test 2] --> D
+A --> G[Build 3] ---> D
+```
+
+</v-after>
+
+<v-clicks>
+
+By building on this, Rollup currently supports 16 targets  
+→ 3 Windows, 2 Mac, 2 Android, 9 Linux
+
+Learning:
+For a server, just build a docker container instead of publishing,  
+but probably avoid Alpine/musl libc
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+What about browser targets?
 
 ---
 layout: section
