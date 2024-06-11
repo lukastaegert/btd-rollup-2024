@@ -24,6 +24,29 @@ sectionNumber: 1
 
 # Open Source
 
+<!--
+Who is using Rollup? Who is using Vite? And who is maintaining their own JavaScript bundler?
+-->
+
+---
+
+# JavaScript Bundlers
+
+<v-click>
+
+(a small selection)
+
+</v-click>
+<v-click>
+
+Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, farm, Rspack, Bun.build, Turbopack
+
+</v-click>
+
+<span v-mark="{ at: 1, color: '#234', type: 'circle' }">
+Important text
+</span>
+
 ---
 layout: section
 sectionNumber: 2
@@ -35,25 +58,38 @@ sectionNumber: 2
 
 # Options for native code
 
+<v-click>
+
 ## C/C++
 
 * Great Node support, powerful
 * Difficult memory management, easy to mess up
+
+</v-click>
+<v-click>
 
 ## Zig
 
 * Used by bun
 * Tooling support and ecosystem still lacking
 
+</v-click>
+<v-click>
+
 ## Go
 
 * Used by esbuild
 * Solid choice, JS interop likely not as mature
 
+</v-click>
+<v-click>
+
 ## Rust
 
 * Great ecosystem for JS interop
 * Innovative memory management via ownership
+
+</v-click>
 
 ---
 
@@ -174,7 +210,7 @@ export function parse(code: string, allowReturnOutsideFunction: boolean): Buffer
 
 <v-click>
 
-Similar to `rust-bindgen`, but more efficient generated code and powerful tooling.
+Similar to `node-bindgen`, but more efficient generated code and powerful tooling.
 
 </v-click>
 
@@ -196,39 +232,8 @@ Set up by NAPI-RS CLI tool
   * list `os` and `cpu` in their `package.json` file
 * `rollup` package has __all__ platform packages as `optionalDependencies`
   * Node only installs suitable packages
-
-</v-clicks>
-
----
-
-# Building binaries for ALL platforms
-
-<v-clicks>
-
-* Not very feasible on a local machine
-* `npx @napi-rs/cli new` scaffolds project with GitHub Actions to build for many platforms
-
-</v-clicks>
-
-<v-after>
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph LR
-A[on.push] --> B[Build 1] --> C[Test 1] --> D[Publish]
-A --> E[Build 2] --> F[Test 2] --> D
-A --> G[Build 3] ---> D
-```
-
-</v-after>
-
-<v-clicks>
-
-By building on this, Rollup currently supports 16 targets  
-→ 3 Windows, 2 Mac, 2 Android, 9 Linux
-
-Learning:
-For a server, just build a docker container instead of publishing,  
-but probably avoid Alpine/musl libc
+* NAPI-RS scaffolds GitHub Actions to build for many platforms
+  * Rollup supports 16 targets: 3 Windows, 2 Mac, 2 Android, 9 Linux
 
 </v-clicks>
 
@@ -239,15 +244,51 @@ layout: statement
 What about browser targets?
 
 ---
+
+# WebAssembly
+
+* Portable binary format
+* Supported in all modern browsers and NodeJS >= 8
+* Some parsing overhead
+
+<v-click>
+
+## One-stop solution: wasm-pack
+
+</v-click>
+
+<div style="display:flex;flex-direction: row;gap: 20px;">
+<img v-after src="/img/wasm-ferris.png" alt="NAPI-RS Logo" style="width:160px;height:100px;"/>
+<div>
+
+<v-click>
+
+Very similar to NAPI-RS
+
+```rust
+use parse_ast::parse_ast;
+use wasm_bindgen::prelude::wasm_bindgen;
+
+#[wasm_bindgen]
+pub fn parse(code: String, allow_return_outside_function: bool) -> Vec<u8> {
+  parse_ast(code, allow_return_outside_function)
+}
+```
+
+</v-click>
+<v-clicks>
+
+* Includes TypeScript type generation
+* For both Node and browser targets
+
+</v-clicks>
+
+</div>
+</div>
+
+---
 layout: section
 sectionNumber: 4
----
-
-# Web Assembly
-
----
-layout: section
-sectionNumber: 5
 ---
 
 # Incremental Migration
