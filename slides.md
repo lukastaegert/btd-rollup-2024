@@ -19,10 +19,10 @@ favicon: /node_modules/@tngtech/slidev-theme-tng/assets/img/favicon.svg
 
 ---
 layout: section
-sectionNumber: 1
+sectionNumber: '1'
 ---
 
-# Open Source
+# JavaScript Bundlers
 
 <!--
 Who is using Rollup? Who is using Vite? And who is maintaining their own JavaScript bundler?
@@ -32,24 +32,88 @@ Who is using Rollup? Who is using Vite? And who is maintaining their own JavaScr
 
 # JavaScript Bundlers
 
-<v-click>
+<div v-click>
 
 (a small selection)
 
-</v-click>
+</div>
 <v-click>
 
 Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, farm, Rspack, Bun.build, Turbopack
 
 </v-click>
 
-<span v-mark="{ at: 1, color: '#234', type: 'circle' }">
-Important text
-</span>
+<v-click>
+
+(most of them are blazingly fast)
+
+</v-click>
+
+---
+
+# Rollup
+
+<div v-click>(not blazingly fast)</div>
+
+<v-click>
+
+## The Rise of Rollup
+
+</v-click>
+<v-clicks>
+
+* 2015: Created by Rich Harris
+* 2017: Maintained by me
+* Main tool for bundling libraries
+* 2020: Vite chooses Rollup for its production build
+  * Adds everything missing for the web
+  * Great developer experience
+
+</v-clicks>
+
+---
+
+# Where Rollup Sucks
+
+<v-click>
+
+## Main issue 1: Memory consumption
+* Tree-shaking requires all modules in memory
+* Solution would require paging
+* Would be complex and slow
+
+</v-click>
+<v-click>
+
+## Main issue 2: Performance
+
+</v-click>
+
+
+---
+
+# A Bold New Strategy
+
+<v-clicks>
+
+* February 2023: Start to move core parts to Rust
+* July 2023: PR opened
+  <img src="/img/pr-native-code.png" width="500px">
+* August 2023: Evan You contacts me
+  <img src="/img/evan-you-message.png" width="300px">
+* Goal: Rewrite Rollup in Rust, no interest in my incremental approach
+
+</v-clicks>
+
+---
+layout: statement
+---
+
+I do not believe in rewrites.
 
 ---
 layout: section
-sectionNumber: 2
+sectionNumber: '2'
 ---
 
 # Rust
@@ -86,7 +150,7 @@ sectionNumber: 2
 
 ## Rust
 
-* Great ecosystem for JS interop
+* Great ecosystem for JS interop, can build upon SWC
 * Innovative memory management via ownership
 
 </v-click>
@@ -154,7 +218,7 @@ Rust is great for performant, safe, and concurrent software.
 
 ---
 layout: section
-sectionNumber: 3
+sectionNumber: '3'
 ---
 
 # Native Binaries in Node
@@ -228,7 +292,7 @@ Set up by NAPI-RS CLI tool
   @rollup/rollup-darwin-arm64
   ...
   ```
-  * contain only `.node` file as entry point
+  * contain `.node` file as entry point
   * list `os` and `cpu` in their `package.json` file
 * `rollup` package has __all__ platform packages as `optionalDependencies`
   * Node only installs suitable packages
@@ -238,14 +302,8 @@ Set up by NAPI-RS CLI tool
 </v-clicks>
 
 ---
-layout: statement
----
 
-What about browser targets?
-
----
-
-# WebAssembly
+# For Browsers: WebAssembly
 
 * Portable binary format
 * Supported in all modern browsers and NodeJS >= 8
@@ -288,7 +346,7 @@ pub fn parse(code: String, allow_return_outside_function: bool) -> Vec<u8> {
 
 ---
 layout: section
-sectionNumber: 4
+sectionNumber: '4'
 ---
 
 # Incremental Migration

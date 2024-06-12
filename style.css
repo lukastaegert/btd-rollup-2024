@@ -5,3 +5,15 @@ h2 {
 h1 + h2 {
     margin-top: 0;
 }
+
+.slide-header {
+    display: none !important;
+}
+
+.slide-base-grid {
+    grid-template-rows: 1fr !important;
+}
+
+.subheading-layout {
+    gap: 0 !important;
+}

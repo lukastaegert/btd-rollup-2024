@@ -7,7 +7,7 @@
     "export": "slidev export"
   },
   "dependencies": {
-    "@slidev/cli": "^0.47.5",
-    "@tngtech/slidev-theme-tng": "^0.4.2"
+    "@slidev/cli": "^0.49.10",
+    "@tngtech/slidev-theme-tng": "^0.5.1"
   }
 }
