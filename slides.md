@@ -89,7 +89,6 @@ Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, far
 
 </v-click>
 
-
 ---
 
 # A Bold New Strategy
@@ -355,7 +354,207 @@ sectionNumber: '4'
 
 ---
 
+# Rollup Build Pipeline
 
+```mermaid {theme: 'neutral', scale: 0.8}
+graph LR
+START[resolve<br>entry modules] --> LOAD[load module] --> PARSE[parse<br>to AST] --> ANALYZE[attach variable scopes,<br>find dependencies] ---> LOAD
+ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --> RENDER[render<br>output]
+```
 
+<v-click>
 
+## Slowest steps
+
+* parsing: handled by acorn
+* tree-shaking
+
+</v-click>
+<v-click>
+
+## Migration
+
+* Replace acorn with SWC, release
+* Then gradually move analysis and tree-shaking to Rust
+
+</v-click>
+
+---
+
+# Data Transfer
+
+## JSON AST is slow
+
+<v-clicks>
+
+- Parse via acorn in JS: 180ms
+- Parse via SWC in Rust: 51ms
+- Parse via SWC and transfer via JSON: 270ms
+
+</v-clicks>
+<v-click>
+
+## Transfer binary data?
+
+</v-click>
+<v-clicks>
+
+- ArrayBuffers provide no-copy transfer to native modules, WebAssembly, workers
+- Pre-made solution: MessagePack <img src="/img/messagepack.png" style="background-color:rgb(41, 41, 41);width:200px">
+
+</v-clicks>
+<v-click>
+
+## But I wrote my own
+
+</v-click>
+
+---
+
+# The Binary AST
+
+<div>Heavily relies on generated code.</div>
+<p><v-clicks>
+
+- AST definitions
+  ```javascript
+  const AST_NODES = {
+    ArrayExpression: {
+      fields: [['elements', 'NodeList']]
+    }, // ...
+  };
+  ```
+- JavaScript decoder
+    ```typescript
+    const nodeConverters = [
+      (position: number, buffer: Uint32Array) => ({
+        type: 'ArrayExpression', start: buffer[position], end: buffer[position + 1],
+        elements: convertNodeList(buffer[position + 2], buffer)
+      }), // ...
+    ];
+    ```
+
+</v-clicks></p>
+<v-click>
+Node types are encoded as numbers, correspond to array indices for fast access.
+</v-click>
+
+---
+
+## The Binary AST
+
+<div>Rust macros encapsulate indices and positions</div>
+<p><v-click>
+
+```rust
+store_array_expression!(
+  self,
+  span => array_literal.span,
+  elements => [array_literal.elems, convert_expression_or_spread]
+);
+```
+
+</v-click></p>
+<v-click>
+
+<div>In the future</div>
+
+* Directly operate on buffer in Rust
+* Encapsulate prop access via `proc_macro_attribute`.
+
+```rust
+#[decode_array_expression]
+fn array_expression_has_effects(position: usize, buffer: &Buffer) -> bool {
+  has_list_node_effect(node.elements, buffer)
+}
+```
+
+</v-click>
+
+---
+
+# How much did we gain?
+
+Original parse time via acorn in JS: 180ms
+
+<v-clicks>
+
+- Parse via SWC in Rust: 51ms
+- Serialize in Rust: 8ms
+- Deserialize in JavaScript: 47ms
+
+</v-clicks>
+<v-click>
+
+Total parse time including conversion: 108ms
+
+</v-click>
+<v-click>
+
+## What about multi-threading?
+
+</v-click>
+<v-click>
+
+- JavaScript workers are very slow to instantiate
+- However, POSIX threads in Rust are nearly free
+
+</v-click>
+<v-click>
+
+For non-WebAssembly, only the decode time is relevant<br>
+—which can be eliminated if JS directly works on the buffer as well.
+
+</v-click>
+
+---
+
+# Will this be needed forever?
+
+<v-clicks>
+
+* Well-optimized parts may never be moved to Rust
+* Working on the buffer allows fast caching/paging
+* JavaScript plugins need access to AST
+  * Provide an API to lazily generate AST nodes from the buffer
+  * Provide an API to walk the AST on the buffer, generate AST nodes only when needed
+
+</v-clicks>
+<p>
+<div v-click>☞ Apparently, nobody has done that before.</div>
+<div v-click>☞ Deno engineers showed great interest if I could extract this.</div>
+</p>
+
+---
+layout: section
+sectionNumber: '5'
+---
+
+# A Future with Vite?
+
+---
+
+# How it continued
+
+<v-clicks>
+
+* August 2023: Evan You offers to pay me as a consultant to support Rolldown
+* October 2023: I propose to make Rolldown the next Rollup version if it can fully replace it
+* March 2024: Finally started offering workshops at TNG to work on Rollup
+* Never heard back from Evan You or the Rolldown team, but…
+* April 2024: Contacted by patak from Vite
+  * The Rolldown team never watched my talk
+  * They perceived the relationship "differently"
+
+</v-clicks>
+<p>
+<div v-click>☞ I will keep focusing on Rollup. Let's see when they match output size.</div>
+<div v-click>☞ They should probably talk to me if they want to align on API development.</div>
+</p>
+
+---
+layout: statement
+---
+
+The End?
 
