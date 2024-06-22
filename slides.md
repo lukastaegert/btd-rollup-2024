@@ -8,6 +8,7 @@ themeConfig:
       email: lukas.taegert-atkinson@tngtech.com
 hideInToc: true
 layout: intro
+#background: ''
 css: unocss
 transition: slide-left
 favicon: /node_modules/@tngtech/slidev-theme-tng/assets/img/favicon.svg
@@ -32,16 +33,47 @@ Who is using Rollup? Who is using Vite? And who is maintaining their own JavaScr
 
 # JavaScript Bundlers
 
-<div v-click>
+<style>
+.bundler-logo {
+    height: 70px;
+}
 
-(a small selection)
+.slidev-vclick-prior .bundler-logo,
+.slidev-vclick-current .bundler-logo {
+    animation: appear 1s both;
+}
 
-</div>
+@keyframes appear {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+</style>
+
+<div>(a small selection)</div>
 <v-click>
 
-Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, farm, Rspack, Bun.build, Turbopack
+<div style="display:flex;flex-direction: row;gap: 20px;flex-wrap: wrap">
+<img src="/img/bundlers/browserify.jpg" alt="Browserify Logo" class="bundler-logo" style="animation-delay:0.2s"/>
+<img src="/img/bundlers/webpack.jpg" alt="Webpack Logo" class="bundler-logo" style="animation-delay:0.4s"/>
+<img src="/img/bundlers/rollup.jpg" alt="Rollup Logo" class="bundler-logo" style="animation-delay:0.6s"/>
+<img src="/img/bundlers/parceljs.png" alt="Parcel Logo" class="bundler-logo" style="animation-delay:0.8s"/>
+<img src="/img/bundlers/esbuild.png" alt="ESBuild Logo" class="bundler-logo" style="animation-delay:1.0s"/>
+<img src="/img/bundlers/vite.jpg" alt="Vite Logo" class="bundler-logo" style="animation-delay:1.2s"/>
+<img src="/img/bundlers/snowpack.jpg" alt="Snowpack Logo" class="bundler-logo" style="animation-delay:1.4s"/>
+<img src="/img/bundlers/swc.png" alt="Browserify Logo" class="bundler-logo" style="animation-delay:1.6s"/>
+<img src="/img/bundlers/rspack.png" alt="Rspack Logo" class="bundler-logo" style="animation-delay:1.8s"/>
+<img src="/img/bundlers/turbopack.png" alt="Turbopack Logo" class="bundler-logo" style="animation-delay:2.0s"/>
+<img src="/img/bundlers/farm.png" alt="Farm Logo" class="bundler-logo" style="animation-delay:2.2s"/>
+<img src="/img/bundlers/bun.png" alt="Bun Logo" class="bundler-logo" style="animation-delay:2.4s"/>
+<img src="/img/bundlers/rolldown.png" alt="Rolldown Logo" class="bundler-logo" style="animation-delay:2.6s"/>
+</div>
 
 </v-click>
+
 
 <v-click>
 
@@ -51,15 +83,15 @@ Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, far
 
 ---
 
+<div style="display: flex;margin-bottom:30px;">
+<img src="/img/rollup-logo.svg" alt="Rollup Logo" style="width:100px;"/>
+<div>
+
 # Rollup
 
-<div v-click>(not blazingly fast)</div>
+<div>(not blazingly fast)</div>
+</div></div>
 
-<v-click>
-
-## The Rise of Rollup
-
-</v-click>
 <v-clicks>
 
 * 2015: Created by Rich Harris
@@ -70,6 +102,16 @@ Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, far
   * Great developer experience
 
 </v-clicks>
+
+<!--
+Just think of the xz backdoor
+-->
+
+---
+
+# Popularity
+
+<img src="/img/bundler-downloads.png" alt="npm-download-trends">
 
 ---
 
@@ -91,7 +133,7 @@ Browserify, Webpack, Rollup, Vite, Snowpack, Parcel, esbuild, swc, Rolldown, far
 
 ---
 
-# A Bold New Strategy
+# Fixing Rollup
 
 <v-clicks>
 
@@ -109,13 +151,38 @@ layout: statement
 ---
 
 I do not believe in rewrites.
-
 ---
 layout: section
 sectionNumber: '2'
 ---
 
-# Rust
+# Incremental Migration
+---
+
+# Rollup Build Pipeline
+
+```mermaid {theme: 'neutral', scale: 0.8}
+graph LR
+START[resolve<br>entry modules] --> LOAD[load module] --> PARSE[parse<br>to AST] --> ANALYZE[attach variable scopes,<br>find dependencies] ---> LOAD
+ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --> RENDER[render<br>output]
+```
+
+<v-click>
+
+## Slowest steps
+
+* parsing: handled by acorn
+* tree-shaking
+
+</v-click>
+<v-click>
+
+## Migration
+
+* Replace acorn with a native solution, release
+* Then gradually move analysis and tree-shaking to native code
+
+</v-click>
 
 ---
 
@@ -149,14 +216,14 @@ sectionNumber: '2'
 
 ## Rust
 
-* Great ecosystem for JS interop, can build upon SWC
-* Innovative memory management via ownership
+* Great ecosystem for JS interop, can build upon SWC's parser
+* Innovative memory management
 
 </v-click>
 
 ---
 
-# Ownership
+# Ownership in Rust
 
 ```rust {1-3|6|1-3,7|8|9|6-7,10|all}
 struct Container {
@@ -348,42 +415,13 @@ layout: section
 sectionNumber: '4'
 ---
 
-# Incremental Migration
-
-## —the data transfer problem
-
----
-
-# Rollup Build Pipeline
-
-```mermaid {theme: 'neutral', scale: 0.8}
-graph LR
-START[resolve<br>entry modules] --> LOAD[load module] --> PARSE[parse<br>to AST] --> ANALYZE[attach variable scopes,<br>find dependencies] ---> LOAD
-ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --> RENDER[render<br>output]
-```
-
-<v-click>
-
-## Slowest steps
-
-* parsing: handled by acorn
-* tree-shaking
-
-</v-click>
-<v-click>
-
-## Migration
-
-* Replace acorn with SWC, release
-* Then gradually move analysis and tree-shaking to Rust
-
-</v-click>
+# The Data Transfer Problem
 
 ---
 
 # Data Transfer
 
-## JSON AST is slow
+## Transferring a JSON syntax tree is slow
 
 <v-clicks>
 
@@ -411,61 +449,82 @@ ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --
 
 ---
 
-# The Binary AST
+# Binary AST
 
 <div>Heavily relies on generated code.</div>
-<p><v-clicks>
 
-- AST definitions
-  ```javascript
-  const AST_NODES = {
-    ArrayExpression: {
-      fields: [['elements', 'NodeList']]
-    }, // ...
-  };
-  ```
-- JavaScript decoder
-    ```typescript
-    const nodeConverters = [
-      (position: number, buffer: Uint32Array) => ({
-        type: 'ArrayExpression', start: buffer[position], end: buffer[position + 1],
-        elements: convertNodeList(buffer[position + 2], buffer)
-      }), // ...
-    ];
-    ```
-
-</v-clicks></p>
 <v-click>
-Node types are encoded as numbers, correspond to array indices for fast access.
+
+## AST definitions
+
+```javascript
+const AST_NODES = {
+  ArrayExpression: {
+    fields: [
+      ['elements', 'NodeList']
+    ]
+  },
+  AssignmentPattern: {
+    fields: [
+      ['left', 'Node'],
+      ['right', 'Node']
+    ]
+  }
+  // ...
+};
+```
+
 </v-click>
 
 ---
 
-## The Binary AST
+## Generated JavaScript decoder
 
-<div>Rust macros encapsulate indices and positions</div>
-<p><v-click>
+<v-clicks>
 
-```rust
-store_array_expression!(
-  self,
-  span => array_literal.span,
-  elements => [array_literal.elems, convert_expression_or_spread]
-);
-```
+- Convert single node
+  ```typescript
+  const convertNode = (position: number, buffer: Uint32Array) => {
+    const type = buffer[position];
+    return nodeConverters[type](position + 1, buffer);
+  };
+  ```
+- Node types are encoded as numbers, correspond to array indices for fast access
+  ```typescript
+  const nodeConverters = [
+    (position, buffer) => ({
+      type: 'ArrayExpression',
+      start: buffer[position],
+      end: buffer[position + 1],
+      elements: convertNodeList(buffer[position + 2], buffer)
+    }), // ...
+  ];
+  ```
 
-</v-click></p>
+</v-clicks>
+
+---
+
+## Generated Rust macros
+
+<div>Encapsulate indices and positions.</div>
+
 <v-click>
 
-<div>In the future</div>
+```rust {1-4|6-14|8-12|all}
+pub struct AstConverter<'a> {
+  pub buffer: Vec<u8>,
+  pub index_converter: Utf8ToUtf16ByteIndexConverterAndAnnotationHandler<'a>,
+}
 
-* Directly operate on buffer in Rust
-* Encapsulate prop access via `proc_macro_attribute`.
-
-```rust
-#[decode_array_expression]
-fn array_expression_has_effects(position: usize, buffer: &Buffer) -> bool {
-  has_list_node_effect(node.elements, buffer)
+impl<'a> AstConverter<'a> {
+  pub fn store_array_expression(&mut self, array_literal: &ArrayLit) {
+    store_array_expression!(
+      buffer,
+      span => array_literal.span,
+      elements => [array_literal.elems, convert_expression_or_spread]
+    );
+  }
 }
 ```
 
@@ -481,7 +540,7 @@ Original parse time via acorn in JS: 180ms
 
 - Parse via SWC in Rust: 51ms
 - Serialize in Rust: 8ms
-- Deserialize in JavaScript: 47ms
+- Deserialize in JavaScript: 47ms (vs. > 200ms)
 
 </v-clicks>
 <v-click>
@@ -509,21 +568,44 @@ For non-WebAssembly, only the decode time is relevant<br>
 
 ---
 
-# Will this be needed forever?
+# The future architecture
 
+<v-click>
+
+## ☞ Stick with the buffers
+
+</v-click>
 <v-clicks>
 
 * Well-optimized parts may never be moved to Rust
 * Working on the buffer allows fast caching/paging
-* JavaScript plugins need access to AST
-  * Provide an API to lazily generate AST nodes from the buffer
-  * Provide an API to walk the AST on the buffer, generate AST nodes only when needed
+* Encapsulate Rust property access via `proc_macro_attribute`.
+  ```rust
+  #[decode_array_expression]
+  fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
+    has_list_node_effect(node.elements, buffer)
+  }
+  ```
 
 </v-clicks>
-<p>
+
+---
+
+# JavaScript plugins remain first class citizens
+
+## Provide an API for performant AST access
+
+<v-clicks>
+
+- walk the AST on the buffer
+- generate AST nodes only when needed
+- generate child nodes lazily via getters
+
+</v-clicks>
+<p></p>
+
 <div v-click>☞ Apparently, nobody has done that before.</div>
 <div v-click>☞ Deno engineers showed great interest if I could extract this.</div>
-</p>
 
 ---
 layout: section
@@ -547,14 +629,15 @@ sectionNumber: '5'
   * They perceived the relationship "differently"
 
 </v-clicks>
-<p>
+
+<p></p>
+
 <div v-click>☞ I will keep focusing on Rollup. Let's see when they match output size.</div>
 <div v-click>☞ They should probably talk to me if they want to align on API development.</div>
-</p>
 
 ---
 layout: statement
 ---
 
-The End?
+The End
 
