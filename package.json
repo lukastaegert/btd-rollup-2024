@@ -2,7 +2,7 @@
   "name": "btd-rollup-2024",
   "private": true,
   "scripts": {
-    "build": "slidev build",
+    "build": "slidev build --out docs --base /btd-rollup-2024/",
     "dev": "slidev --open",
     "export": "slidev export"
   },
