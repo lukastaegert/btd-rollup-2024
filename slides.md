@@ -3,25 +3,49 @@ theme: "@tngtech/slidev-theme-tng"
 # https://sli.dev/custom/highlighters.html
 highlighter: shiki
 themeConfig:
+  date: 1720188900000
   authors:
     - name: Lukas Taegert-Atkinson
       email: lukas.taegert-atkinson@tngtech.com
 hideInToc: true
-layout: intro
-#background: ''
+blurBackground: true
+title: Reinventing Rollup
+background: img/backgrounds/reinventing-rollup.jpeg
+layout: fullsize-image
+class: text-center
 css: unocss
-transition: slide-left
-favicon: /node_modules/@tngtech/slidev-theme-tng/assets/img/favicon.svg
+transition: fade
+favicon: favicon.svg
 ---
 
 # Rollup Reloaded
 
 ## A Journey into Rust, WebAssembly, and High-Speed Bundling
 
+<div style="margin:96px auto 0">
+
+Dr. Lukas Taegert-Atkinson<br>
+TNG Technology Consulting
+
+</div>
+<div style="margin: 24px auto">
+
+Maintainer of RollupJS
+
+</div>
+
+<p style="margin: auto"><img src="/img/tng-white.svg" alt="TNG Technology Consulting" style="width: 200px;"/></p>
+
 ---
 layout: section
 sectionNumber: '1'
 ---
+
+<style scoped>
+:deep(.bg-standout) {
+    background-image: linear-gradient(#0006, #000b),url('img/backgrounds/reinventing-rollup.jpeg');
+}
+</style>
 
 # JavaScript Bundlers
 
@@ -214,80 +238,13 @@ ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --
 </v-click>
 <v-click>
 
-## Rust
+## <span v-mark="{ at: 5, color: '#000', type: 'circle' }">Rust</span>
 
-* Great ecosystem for JS interop, can build upon SWC's parser
 * Innovative memory management
+* Great ecosystem for JS interop, can build upon SWC's parser
+
 
 </v-click>
-
----
-
-# Ownership in Rust
-
-```rust {1-3|6|1-3,7|8|9|6-7,10|all}
-struct Container {
-    data: String
-}
-
-fn main() {
-    let hello = String::from("Hello");
-    let mut container = Container { data: hello };
-    container.data.push_str(" World");
-    println!("{}", container.data);
-    println!("{}", hello); // ❌ value has been "moved" to "container"
-}
-```
-
-<v-clicks>
-
-* Every value is "owned" by a variable binding.
-* Ownership is transferred on assignment or function call.
-* Memory is freed when the owner goes out of scope.
-
-</v-clicks>
-
----
-
-# Borrowing
-
-```rust {1-3|6|1-3,7-8|9|10-11|12|all}
-struct Container<'a> {
-    data: &'a mut String,
-}
-
-fn main() {
-    let mut hello = String::from("Hello");
-    // begin borrow/lifetime a
-    let container = Container { data: &mut hello };
-    container.data.push_str(" World");
-    println!("{}", container.data);
-    // end borrow/lifetime a after last use
-    println!("{}", hello); // cannot happen before last container usage
-}
-```
-
-<v-clicks>
-
-* Values can be "borrowed" via references (= pointers)
-* References have lifetimes controlled by their usage
-* At most one mutable reference at a time, or multiple immutable ones
-* Avoids data races
-
-</v-clicks>
-
----
-layout: statement
----
-
-Rust is great for performant, safe, and concurrent software.
-
----
-layout: section
-sectionNumber: '3'
----
-
-# Native Binaries in Node
 
 ---
 
@@ -348,7 +305,7 @@ Similar to `node-bindgen`, but more efficient generated code and powerful toolin
 
 # How to publish across platforms
 
-Set up by NAPI-RS CLI tool
+## Set up by NAPI-RS CLI tool
 
 <v-clicks>
 
@@ -373,7 +330,6 @@ Set up by NAPI-RS CLI tool
 
 * Portable binary format
 * Supported in all modern browsers and NodeJS >= 8
-* Some parsing overhead
 
 <v-click>
 
@@ -412,7 +368,7 @@ pub fn parse(code: String, allow_return_outside_function: bool) -> Vec<u8> {
 
 ---
 layout: section
-sectionNumber: '4'
+sectionNumber: '3'
 ---
 
 # The Data Transfer Problem
@@ -540,12 +496,13 @@ Original parse time via acorn in JS: 180ms
 
 - Parse via SWC in Rust: 51ms
 - Serialize in Rust: 8ms
-- Deserialize in JavaScript: 47ms (vs. > 200ms)
+- Deserialize in JavaScript: 47ms
 
 </v-clicks>
 <v-click>
 
-Total parse time including conversion: 108ms
+Total parse time including conversion: 108ms.<br>
+Serialize + deserialize 4 times faster than JSON.
 
 </v-click>
 <v-click>
@@ -609,7 +566,7 @@ For non-WebAssembly, only the decode time is relevant<br>
 
 ---
 layout: section
-sectionNumber: '5'
+sectionNumber: '4'
 ---
 
 # A Future with Vite?
@@ -636,8 +593,25 @@ sectionNumber: '5'
 <div v-click>☞ They should probably talk to me if they want to align on API development.</div>
 
 ---
-layout: statement
+layout: fullsize-image
+class: text-center
+background: img/backgrounds/reinventing-rollup.jpeg
 ---
 
-The End
+# Thank you
+
+Dr. Lukas Taegert-Atkinson<br>
+TNG Technology Consulting
+
+<div style="margin:96px auto 24px">
+
+<a href="https://m.webtoo.ls/@lukastaegert"><logos-mastodon-icon /> @lukastaegert@webtoo.ls</a>
+
+<a href="https://rollupjs.org/"><logos-rollup/> rollupjs.org</a>
+
+slides: <a href="https://lukastaegert.github.io/btd-rollup-2024">lukastaegert.github.io/btd-rollup-2024</a>
+
+</div>
+
+<p style="margin: auto"><img src="/img/tng-white.svg" alt="TNG Technology Consulting" style="width: 200px;"/></p>
 
