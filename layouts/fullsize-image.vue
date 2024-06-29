@@ -15,10 +15,10 @@ const props = defineProps({
 });
 
 const style = computed(
-  () =>
-    `color: white; background-image: linear-gradient(#0006, #000b),url('${
-      import.meta.env.BASE_URL
-    }${props.background}');`
+  () => ({
+    color: 'white',
+    backgroundImage: `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_URL}${props.background}')`,
+  })
 );
 </script>
 
@@ -29,11 +29,14 @@ const style = computed(
 
 .background-image :deep(h1) {
   color: white;
-  font-size: 4rem;
+  font-size: 4.5rem;
+  font-weight: 700;
 }
 
 :deep(h2) {
   margin-top: 0;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 100;
 }
 </style>

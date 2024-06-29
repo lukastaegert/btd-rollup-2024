@@ -8,7 +8,7 @@ themeConfig:
     - name: Lukas Taegert-Atkinson
       email: lukas.taegert-atkinson@tngtech.com
 hideInToc: true
-blurBackground: true
+author: Lukas Taegert-Atkinson
 title: Reinventing Rollup
 background: img/backgrounds/reinventing-rollup.jpeg
 layout: fullsize-image
@@ -16,13 +16,16 @@ class: text-center
 css: unocss
 transition: fade
 favicon: favicon.svg
+aspectRatio: 16/10
 ---
+
+<p></p>
 
 # Rollup Reloaded
 
 ## A Journey into Rust, WebAssembly, and High-Speed Bundling
 
-<div style="margin:96px auto 0">
+<div style="margin:100px auto 0">
 
 Dr. Lukas Taegert-Atkinson<br>
 TNG Technology Consulting
@@ -39,11 +42,18 @@ Maintainer of RollupJS
 ---
 layout: section
 sectionNumber: '1'
+transition: slide-left
 ---
+
+<script setup>
+const background = `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_URL}img/backgrounds/reinventing-rollup.jpeg')`
+</script>
 
 <style scoped>
 :deep(.bg-standout) {
-    background-image: linear-gradient(#0006, #000b),url('img/backgrounds/reinventing-rollup.jpeg');
+    background-image: v-bind(background);
+    background-position: 70% 78%;
+    background-size: 250%;
 }
 </style>
 
@@ -138,6 +148,8 @@ Just think of the xz backdoor
 <img src="/img/bundler-downloads.png" alt="npm-download-trends">
 
 ---
+transition: slide-left
+---
 
 # Where Rollup Sucks
 
@@ -172,15 +184,31 @@ Just think of the xz backdoor
 
 ---
 layout: statement
+transition: slide-left
 ---
 
-I do not believe in rewrites.
+I do not believe in rewrites
+
 ---
 layout: section
 sectionNumber: '2'
+transition: slide-left
 ---
 
+<script setup>
+const background = `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_URL}img/backgrounds/reinventing-rollup.jpeg')`
+</script>
+
+<style scoped>
+:deep(.bg-standout) {
+    background-image: v-bind(background);
+    background-position: 5% 5%;
+    background-size: 250%;
+}
+</style>
+
 # Incremental Migration
+
 ---
 
 # Rollup Build Pipeline
@@ -208,6 +236,8 @@ ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --
 
 </v-click>
 
+---
+transition: slide-left
 ---
 
 # Options for native code
@@ -325,6 +355,8 @@ Similar to `node-bindgen`, but more efficient generated code and powerful toolin
 </v-clicks>
 
 ---
+transition: slide-left
+---
 
 # For Browsers: WebAssembly
 
@@ -369,7 +401,20 @@ pub fn parse(code: String, allow_return_outside_function: bool) -> Vec<u8> {
 ---
 layout: section
 sectionNumber: '3'
+transition: slide-left
 ---
+
+<script setup>
+const background = `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_URL}img/backgrounds/reinventing-rollup.jpeg')`
+</script>
+
+<style scoped>
+:deep(.bg-standout) {
+    background-image: v-bind(background);
+    background-position: 50% 25%;
+    background-size: 300%;
+}
+</style>
 
 # The Data Transfer Problem
 
@@ -460,6 +505,8 @@ const AST_NODES = {
 </v-clicks>
 
 ---
+transition: slide-left
+---
 
 ## Generated Rust macros
 
@@ -536,16 +583,23 @@ For non-WebAssembly, only the decode time is relevant<br>
 
 * Well-optimized parts may never be moved to Rust
 * Working on the buffer allows fast caching/paging
-* Encapsulate Rust property access via `proc_macro_attribute`.
-  ```rust
-  #[decode_array_expression]
-  fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
-    has_list_node_effect(node.elements, buffer)
-  }
-  ```
+* Could easily replace SWC with an even faster parser like OXC
 
 </v-clicks>
+<v-click>
 
+In Rust: Encapsulate Rust property access via `proc_macro_attribute`.
+```rust
+#[decode_array_expression]
+fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
+  has_list_node_effect(node.elements, buffer)
+}
+```
+
+</v-click>
+
+---
+transition: slide-left
 ---
 
 # JavaScript plugins remain first class citizens
@@ -567,7 +621,20 @@ For non-WebAssembly, only the decode time is relevant<br>
 ---
 layout: section
 sectionNumber: '4'
+transition: slide-left
 ---
+
+<script setup>
+const background = `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_URL}img/backgrounds/reinventing-rollup.jpeg')`
+</script>
+
+<style scoped>
+:deep(.bg-standout) {
+    background-image: v-bind(background);
+    background-position: 40% 50%;
+    background-size: 250%;
+}
+</style>
 
 # A Future with Vite?
 
