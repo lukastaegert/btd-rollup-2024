@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "slidev build --out docs --base /btd-rollup-2024/",
+    "preview": "npx vite preview --outDir docs --base /btd-rollup-2024/",
     "dev": "slidev --open",
     "export": "slidev export"
   },

@@ -283,7 +283,6 @@ transition: slide-left
 <v-clicks>
 
 * `.node` files (actually a renamed `.so`, `.dylib` or `.dll` depending on OS)
-* Only usable via `require`
 * Traditionally created via `node-gyp` from C++, recompiled for every Node version
 * Since Node 8: Node-API (N-API) as stable interface
   * Binaries work across Node versions
@@ -314,7 +313,7 @@ pub fn parse(code: String, allow_return_outside_function: bool) -> Buffer {
 
 <v-click>
 
-Auto-generated types
+Generates .node file, JavaScript wrapper and types
 
 ```typescript
 export function parse(code: string, allowReturnOutsideFunction: boolean): Buffer
@@ -328,6 +327,12 @@ export function parse(code: string, allowReturnOutsideFunction: boolean): Buffer
 <v-click>
 
 Similar to `node-bindgen`, but more efficient generated code and powerful tooling.
+
+</v-click>
+
+<v-click>
+
+For browsers/WebAssembly: __wasm-pack__ <img src="/img/wasm-ferris.png" alt="NAPI-RS Logo" style="width:80px;height:50px;display:inline-block"/>
 
 </v-click>
 
@@ -355,48 +360,11 @@ Similar to `node-bindgen`, but more efficient generated code and powerful toolin
 </v-clicks>
 
 ---
+layout: statement
 transition: slide-left
 ---
 
-# For Browsers: WebAssembly
-
-* Portable binary format
-* Supported in all modern browsers and NodeJS >= 8
-
-<v-click>
-
-## One-stop solution: wasm-pack
-
-</v-click>
-
-<div style="display:flex;flex-direction: row;gap: 20px;">
-<img v-after src="/img/wasm-ferris.png" alt="NAPI-RS Logo" style="width:160px;height:100px;"/>
-<div>
-
-<v-click>
-
-Very similar to NAPI-RS
-
-```rust
-use parse_ast::parse_ast;
-use wasm_bindgen::prelude::wasm_bindgen;
-
-#[wasm_bindgen]
-pub fn parse(code: String, allow_return_outside_function: bool) -> Vec<u8> {
-  parse_ast(code, allow_return_outside_function)
-}
-```
-
-</v-click>
-<v-clicks>
-
-* Includes TypeScript type generation
-* For both Node and browser targets
-
-</v-clicks>
-
-</div>
-</div>
+That was the theory
 
 ---
 layout: section
@@ -571,6 +539,13 @@ For non-WebAssembly, only the decode time is relevant<br>
 </v-click>
 
 ---
+layout: statement
+transition: slide-left
+---
+
+Currently, Rollup 4 is about 20% faster than Rollup 3
+
+---
 
 # The future architecture
 
@@ -588,7 +563,10 @@ For non-WebAssembly, only the decode time is relevant<br>
 </v-clicks>
 <v-click>
 
-In Rust: Encapsulate Rust property access via `proc_macro_attribute`.
+## How will it work in Rust?
+
+<div>Encapsulate Rust property access via a <code>proc_macro_attribute</code>.</div>
+
 ```rust
 #[decode_array_expression]
 fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
@@ -602,7 +580,7 @@ fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
 transition: slide-left
 ---
 
-# JavaScript plugins remain first class citizens
+# And: JavaScript plugins remain first class citizens
 
 ## Provide an API for performant AST access
 
