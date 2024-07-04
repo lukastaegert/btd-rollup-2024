@@ -169,7 +169,7 @@ transition: slide-left
 
 ---
 
-# Fixing Rollup
+# A Bold Plan
 
 <v-clicks>
 
@@ -278,6 +278,63 @@ transition: slide-left
 
 ---
 
+# Interlude: Ownership in Rust
+
+```rust {1-3|6|1-3,7|8|9|6-7,10|all}
+struct Container {
+    data: String
+}
+
+fn main() {
+    let hello = String::from("Hello");
+    let mut container = Container { data: hello };
+    container.data.push_str(" World");
+    println!("{}", container.data);
+    println!("{}", hello); // ❌ value has been "moved" to "container"
+}
+```
+
+<v-clicks>
+
+* Values have "owners"
+* Ownership is transferred on assignment or function call
+* Memory is freed when the owner goes out of scope
+
+</v-clicks>
+
+---
+transition: slide-left
+---
+
+# Interlude: Borrowing
+
+```rust {1-3|6|1-3,7-8|9|10-11|12|all}
+struct Container<'a> {
+    data: &'a mut String
+}
+
+fn main() {
+    let mut hello = String::from("Hello");
+    // begin borrow/lifetime a
+    let container = Container { data: &mut hello };
+    container.data.push_str(" World");
+    println!("{}", container.data);
+    // end borrow/lifetime a after last use
+    println!("{}", hello); // cannot happen before last container usage
+}
+```
+
+<v-clicks>
+
+* Values can be "borrowed" via references (= pointers)
+* References have lifetimes controlled by their usage
+* At most one mutable reference at a time, or multiple immutable ones
+* Avoids data races
+
+</v-clicks>
+
+---
+
 # Native Node Modules
 
 <v-clicks>
@@ -326,12 +383,6 @@ export function parse(code: string, allowReturnOutsideFunction: boolean): Buffer
 
 <v-click>
 
-Similar to `node-bindgen`, but more efficient generated code and powerful tooling.
-
-</v-click>
-
-<v-click>
-
 For browsers/WebAssembly: __wasm-pack__ <img src="/img/wasm-ferris.png" alt="NAPI-RS Logo" style="width:80px;height:50px;display:inline-block"/>
 
 </v-click>
@@ -344,16 +395,13 @@ For browsers/WebAssembly: __wasm-pack__ <img src="/img/wasm-ferris.png" alt="NAP
 
 <v-clicks>
 
-* separate packages for every target
+* separate packages for every target with `os` and `cpu` restrictions
   ```
   @rollup/rollup-win32-x64-msvc
   @rollup/rollup-darwin-arm64
   ...
   ```
-  * contain `.node` file as entry point
-  * list `os` and `cpu` in their `package.json` file
 * `rollup` package has __all__ platform packages as `optionalDependencies`
-  * Node only installs suitable packages
 * NAPI-RS scaffolds GitHub Actions to build for many platforms
   * Rollup supports 16 targets: 3 Windows, 2 Mac, 2 Android, 9 Linux
 
@@ -556,34 +604,15 @@ Currently, Rollup 4 is about 20% faster than Rollup 3
 </v-click>
 <v-clicks>
 
-* Well-optimized parts may never be moved to Rust
-* Working on the buffer allows fast caching/paging
-* Could easily replace SWC with an even faster parser like OXC
+* Allows fast caching/paging
+* Can be accessed from JavaScript and Rust
 
 </v-clicks>
 <v-click>
 
-## How will it work in Rust?
-
-<div>Encapsulate Rust property access via a <code>proc_macro_attribute</code>.</div>
-
-```rust
-#[decode_array_expression]
-fn array_expression_has_effects(position: usize, buffer: &AstBuffer) -> bool {
-  has_list_node_effect(node.elements, buffer)
-}
-```
+## Provide a JavaScript plugin API for performant AST access
 
 </v-click>
-
----
-transition: slide-left
----
-
-# And: JavaScript plugins remain first class citizens
-
-## Provide an API for performant AST access
-
 <v-clicks>
 
 - walk the AST on the buffer
@@ -623,7 +652,7 @@ const background = `linear-gradient(#0006, #000b),url('${import.meta.env.BASE_UR
 <v-clicks>
 
 * August 2023: Evan You offers to pay me as a consultant to support Rolldown
-* October 2023: I propose to make Rolldown the next Rollup version if it can fully replace it
+* October 2023: At ViteConf, I propose to make Rolldown the next Rollup version if it can fully replace it
 * March 2024: Finally started offering workshops at TNG to work on Rollup
 * Never heard back from Evan You or the Rolldown team, but…
 * April 2024: Contacted by patak from Vite
