@@ -16,7 +16,7 @@ class: text-center
 css: unocss
 transition: fade
 favicon: favicon.svg
-aspectRatio: 16/10
+aspectRatio: 16/9
 ---
 
 <p></p>
@@ -237,7 +237,7 @@ ANALYZE --> TREESHAKE[tree-shake<br>dead code] --> CHUNKS[generate<br>chunks] --
 </v-click>
 
 ---
-transition: slide-left
+transition: slide-up
 ---
 
 # Options for native code
